@@ -11,9 +11,54 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
+  .then(self => {
+    console.log(`Connected to the database."`);
+    return self.connection.dropDatabase();
+  })
   .then(() => {
-    console.log(`Connected to the database: "${x.connections[0].name}"`);
-    // Run your code here, after you have insured that the connection was made
+    return Recipe.create({
+      title: 'Corn sauce',
+      level: 'Easy Peasy',
+      ingredients: ['cook', 'bake for 10min', 'eat'],
+      cuisine: 'Mexican',
+      dishType: 'Dish',
+      duration: 30,
+      creator: 'Aline'
+    });
+  })
+  .then(() => {
+    return Recipe.insertMany(data);
+  })
+  .then(() => {
+    return Recipe.find({}, { title: 1, _id: 0 });
+  })
+  .then(recipeDocument => {
+    console.log(recipeDocument);
+  })
+  .then(() => {
+    return Recipe.updateOne({ title: 'Rigatoni alla Genovese' }, { duration: 100 });
+  })
+  .then(works => {
+    if (works) {
+      console.log('Changes ran successfully');
+    }
+  })
+  .then(() => {
+    return Recipe.deleteOne({ title: 'Carrot Cake' });
+  })
+  .then(works => {
+    if (works) {
+      console.log('Changes ran successfully');
+    }
+  })
+  .then(() => {
+    return Recipe.find({}, { title: 1, _id: 0 });
+  })
+  .then(recipeDocument => {
+    console.log(recipeDocument);
+  })
+  .then(() => {
+    return mongoose.disconnect();
   })
   .catch(error => {
     console.error('Error connecting to the database', error);
